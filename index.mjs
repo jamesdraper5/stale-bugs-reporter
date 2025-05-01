@@ -208,7 +208,7 @@ function sendChatMessage(message, url) {
 
   //console.log("Normalized tasks:", normailizedTasks);
 
-  const message = `**:radioactive_sign: Tasks Over ${minTaskAgeInDays} Days Old:** \n \n \n ${generateTasksMarkdownTable(
+  const message = `:radioactive_sign: @online here are the **Tasks Over ${minTaskAgeInDays} Days Old:** \n \n \n ${generateTasksMarkdownTable(
     normailizedTasks
   )}`;
 
