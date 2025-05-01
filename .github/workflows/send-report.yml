@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Run script
-        run: node notify.js
+        run: node index.mjs
         env:
           TEAMWORK_CHAT_URL: ${{ secrets.TEAMWORK_CHAT_URL }}
           TEAMWORK_API_KEY: ${{ secrets.TEAMWORK_API_KEY }}
