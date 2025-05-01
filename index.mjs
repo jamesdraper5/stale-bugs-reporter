@@ -201,7 +201,7 @@ function sendChatMessage(message, url) {
         (field) => field.name.toLowerCase() === "impact"
       )?.value,
       productArea: customFieldsByTask[task.id].find(
-        (field) => field.toLowerCase() === "product area"
+        (field) => field.name.toLowerCase() === "product area"
       )?.value,
     };
   });
