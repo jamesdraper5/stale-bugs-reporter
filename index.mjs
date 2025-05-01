@@ -46,7 +46,7 @@ function generateTasksMarkdownTable(tasks) {
   const rows = tasks.map((task) => {
     return [
       `[${task.name}](${TEAMWORK_BASE_URL}/app/tasks/${task.id})`,
-      new Date(task.createdAt).toLocaleDateString(),
+      new Date(task.createdAt).toLocaleDateString("en-IE"),
       task.productArea || "-",
       task.impact || "-",
       formatPriority(task.priority),
