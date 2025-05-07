@@ -1,4 +1,6 @@
 import fetch from "node-fetch";
+import dotenv from "dotenv";
+dotenv.config();
 
 const TEAMWORK_CHAT_URL = process.env.TEAMWORK_CHAT_URL;
 const TEAMWORK_API_KEY = process.env.TEAMWORK_API_KEY;
@@ -6,7 +8,6 @@ const DESK_API_KEY = process.env.DESK_API_KEY;
 const TEAMWORK_BASE_URL = process.env.TEAMWORK_BASE_URL;
 const TEAMWORK_TASKLIST_ID = process.env.TEAMWORK_TASKLIST_ID;
 
-const apiEndpoint = `${TEAMWORK_BASE_URL}/projects/api/v3/tasklists/${TEAMWORK_TASKLIST_ID}/tasks.json`;
 const minTaskAgeInDays = 90;
 const assigneeTeamId = 9; // My Team
 
@@ -22,8 +23,6 @@ const apiParams = {
   orderBy: "createdAt",
   orderMode: "asc",
 };
-
-const endpoint = `${apiEndpoint}?${new URLSearchParams(apiParams)}`;
 
 function getDateInPast(daysAgo) {
   const newDate = new Date();
@@ -164,9 +163,9 @@ function sendChatMessage(message, url) {
     });
 }
 
-// Main function to fetch tasks and send to Slack
-(async () => {
-  const res = await fetch(endpoint, {
+async function makeTeamworkAPICall(url) {
+  console.log("Making API call to:", url);
+  const res = await fetch(url, {
     method: "GET",
     headers: {
       Authorization: `Basic ${btoa(`${TEAMWORK_API_KEY}:xxx`)}`,
@@ -179,16 +178,29 @@ function sendChatMessage(message, url) {
   }
 
   const data = await res.json();
+  return data;
+}
 
-  // console.log("Data fetched successfully:", data);
+async function getTeamworkTasks({ taskListID, apiParams = {} }) {
+  let endpoint = `${TEAMWORK_BASE_URL}/projects/api/v3/`;
+  endpoint += taskListID ? `tasklists/${taskListID}/tasks.json` : `tasks.json`;
 
-  const customFieldsByTask = groupCustomFieldsByTaskId(data.included);
-  //console.log("Custom fields by task:", customFieldsByTask);
+  if (apiParams) {
+    endpoint += `?${new URLSearchParams(apiParams)}`;
+  }
 
-  const tasksWithTicketCounts = await addDeskTicketCounts(data.tasks);
-  //console.log("Tasks with ticket counts:", tasksWithTicketCounts);
+  const data = await makeTeamworkAPICall(endpoint);
+  return data;
+}
 
-  const normailizedTasks = tasksWithTicketCounts.map((task) => {
+async function getTeamworkTasksWithCustomFieldsAndTicketCounts({
+  taskListID,
+  apiParams = {},
+}) {
+  const taskData = await getTeamworkTasks({ taskListID, apiParams });
+  const customFieldsByTask = groupCustomFieldsByTaskId(taskData.included);
+  const tasksWithTicketCounts = await addDeskTicketCounts(taskData.tasks);
+  return tasksWithTicketCounts.map((task) => {
     return {
       name: task.name,
       id: task.id,
@@ -205,15 +217,24 @@ function sendChatMessage(message, url) {
       )?.value,
     };
   });
+}
+
+// Main function to fetch tasks and send to Slack
+(async () => {
+  // Fetch tasks from Teamwork
+  const tasks = await getTeamworkTasksWithCustomFieldsAndTicketCounts({
+    taskListID: TEAMWORK_TASKLIST_ID,
+    apiParams: apiParams,
+  });
 
   //console.log("Normalized tasks:", normailizedTasks);
 
   const message = `:radioactive_sign: @online here are the **Tasks Over ${minTaskAgeInDays} Days Old:** \n \n \n ${generateTasksMarkdownTable(
-    normailizedTasks
+    tasks
   )}`;
 
   console.log(message);
   // Send the message to Chat
-  await sendChatMessage(message, TEAMWORK_CHAT_URL);
+  //await sendChatMessage(message, TEAMWORK_CHAT_URL);
   //console.log("Chat message sent.");
 })();
