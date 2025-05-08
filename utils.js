@@ -7,3 +7,9 @@ export function generateMarkdownTable({ headers = [], rows = [] }) {
 
   return table;
 }
+
+export function getDateInPast(daysAgo) {
+  const newDate = new Date();
+  newDate.setDate(newDate.getDate() - daysAgo);
+  return newDate.toISOString();
+}

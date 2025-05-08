@@ -4,7 +4,7 @@ import {
   getTasksWithCustomFieldsAndTicketCounts,
   sendChatMessage,
 } from "./lib/teamwork.js";
-import { generateMarkdownTable } from "./utils.js";
+import { generateMarkdownTable, getDateInPast } from "./utils.js";
 dotenv.config();
 
 const TEAMWORK_CHAT_URL = process.env.TEAMWORK_CHAT_URL;
@@ -28,12 +28,6 @@ const apiParams = {
   orderBy: "createdAt",
   orderMode: "asc",
 };
-
-function getDateInPast(daysAgo) {
-  const newDate = new Date();
-  newDate.setDate(newDate.getDate() - daysAgo);
-  return newDate.toISOString();
-}
 
 function generateTasksTable(tasks) {
   // loop through the tasks and create a table
