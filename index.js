@@ -4,12 +4,14 @@ import {
   getTasksWithCustomFieldsAndTicketCounts,
   sendChatMessage,
 } from "./lib/teamwork.js";
-import { generateMarkdownTable, getDateInPast } from "./utils.js";
+import {
+  generateMarkdownTable,
+  getDateInPast,
+  formatPriority,
+} from "./utils.js";
 dotenv.config();
 
 const TEAMWORK_CHAT_URL = process.env.TEAMWORK_CHAT_URL;
-const TEAMWORK_API_KEY = process.env.TEAMWORK_API_KEY;
-const DESK_API_KEY = process.env.DESK_API_KEY;
 const TEAMWORK_BASE_URL = process.env.TEAMWORK_BASE_URL;
 const TEAMWORK_TASKLIST_ID = process.env.TEAMWORK_TASKLIST_ID;
 
@@ -52,24 +54,6 @@ function generateTasksTable(tasks) {
   });
 
   return generateMarkdownTable({ headers, rows });
-}
-
-function formatPriority(priority) {
-  if (!priority) {
-    return "No Priority";
-  }
-
-  const priorityMap = {
-    high: ":heart: High",
-    medium: ":yellow_heart: Medium",
-    low: ":green_heart: Low",
-  };
-
-  if (priorityMap[priority]) {
-    return priorityMap[priority];
-  }
-
-  return "";
 }
 
 // Main function to fetch tasks and send to Slack

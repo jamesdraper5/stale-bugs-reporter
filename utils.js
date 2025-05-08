@@ -13,3 +13,21 @@ export function getDateInPast(daysAgo) {
   newDate.setDate(newDate.getDate() - daysAgo);
   return newDate.toISOString();
 }
+
+export function formatPriority(priority) {
+  if (!priority) {
+    return "No Priority";
+  }
+
+  const priorityMap = {
+    high: ":heart: High",
+    medium: ":yellow_heart: Medium",
+    low: ":green_heart: Low",
+  };
+
+  if (priorityMap[priority]) {
+    return priorityMap[priority];
+  }
+
+  return "";
+}
