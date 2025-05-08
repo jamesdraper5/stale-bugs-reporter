@@ -1,6 +1,10 @@
 import fetch from "node-fetch";
 import dotenv from "dotenv";
-import { getTasksWithCustomFieldsAndTicketCounts } from "./lib/teamwork.js";
+import {
+  getTasksWithCustomFieldsAndTicketCounts,
+  sendChatMessage,
+} from "./lib/teamwork.js";
+import { generateMarkdownTable } from "./utils.js";
 dotenv.config();
 
 const TEAMWORK_CHAT_URL = process.env.TEAMWORK_CHAT_URL;
@@ -31,7 +35,7 @@ function getDateInPast(daysAgo) {
   return newDate.toISOString();
 }
 
-function generateTasksMarkdownTable(tasks) {
+function generateTasksTable(tasks) {
   // loop through the tasks and create a table
   const headers = [
     "Name",
@@ -41,7 +45,6 @@ function generateTasksMarkdownTable(tasks) {
     "Priority",
     "Desk Tickets",
   ];
-  const separator = ["---", "---", "---", "---", "---", "---"];
 
   const rows = tasks.map((task) => {
     return [
@@ -54,11 +57,7 @@ function generateTasksMarkdownTable(tasks) {
     ];
   });
 
-  const table = [headers, separator, ...rows]
-    .map((row) => `| ${row.join(" | ")} |`)
-    .join("\n");
-
-  return table;
+  return generateMarkdownTable({ headers, rows });
 }
 
 function formatPriority(priority) {
@@ -79,28 +78,6 @@ function formatPriority(priority) {
   return "";
 }
 
-function sendChatMessage(message, url) {
-  const data = {
-    body: message,
-  };
-  const headers = {
-    "Content-type": "application/json",
-  };
-
-  return fetch(url, {
-    method: "post",
-    body: JSON.stringify(data),
-    headers: headers,
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Message sent successfully:", data);
-    })
-    .catch((error) => {
-      console.error("Error sending message:", error);
-    });
-}
-
 // Main function to fetch tasks and send to Slack
 (async () => {
   // Fetch tasks from Teamwork
@@ -111,12 +88,12 @@ function sendChatMessage(message, url) {
 
   //console.log("Normalized tasks:", normailizedTasks);
 
-  const message = `:radioactive_sign: @online here are the **Tasks Over ${minTaskAgeInDays} Days Old:** \n \n \n ${generateTasksMarkdownTable(
+  const message = `:radioactive_sign: @online here are the **Tasks Over ${minTaskAgeInDays} Days Old:** \n \n \n ${generateTasksTable(
     tasks
   )}`;
 
   console.log(message);
   // Send the message to Chat
-  //await sendChatMessage(message, TEAMWORK_CHAT_URL);
+  await sendChatMessage(message, TEAMWORK_CHAT_URL);
   //console.log("Chat message sent.");
 })();
