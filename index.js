@@ -1,9 +1,6 @@
 import fetch from "node-fetch";
 import dotenv from "dotenv";
-import {
-  getTasksWithCustomFieldsAndTicketCounts,
-  sendChatMessage,
-} from "./lib/teamwork.js";
+import { getEnrichedTasks, sendChatMessage } from "./lib/teamwork.js";
 import {
   generateMarkdownTable,
   getDateInPast,
@@ -40,6 +37,7 @@ function generateTasksTable(tasks) {
     "Impact",
     "Priority",
     "Desk Tickets",
+    "Bug Score",
   ];
 
   const rows = tasks.map((task) => {
@@ -50,6 +48,7 @@ function generateTasksTable(tasks) {
       task.impact || "-",
       formatPriority(task.priority),
       task.ticketCount || "-",
+      task.bugScore || "-",
     ];
   });
 
@@ -59,7 +58,7 @@ function generateTasksTable(tasks) {
 // Main function to fetch tasks and send to Slack
 (async () => {
   // Fetch tasks from Teamwork
-  const tasks = await getTasksWithCustomFieldsAndTicketCounts({
+  const tasks = await getEnrichedTasks({
     taskListID: TEAMWORK_TASKLIST_ID,
     apiParams: apiParams,
   });
@@ -69,8 +68,8 @@ function generateTasksTable(tasks) {
   const message = `:radioactive_sign: @online here are the **Tasks Over ${minTaskAgeInDays} Days Old:** \n \n \n ${generateTasksTable(
     tasks
   )}`;
-
   console.log(message);
+
   // Send the message to Chat
   await sendChatMessage(message, TEAMWORK_CHAT_URL);
   //console.log("Chat message sent.");
