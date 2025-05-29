@@ -1,0 +1,30 @@
+name: Weekly Top Bugs Notification
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # 9am UTC every Friday
+  workflow_dispatch: # Allow manual run too
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run script
+        run: node top-bugs.js
+        env:
+          TEAMWORK_CHAT_URL: ${{ secrets.CORE_CHANNEL_URL }}
+          TEAMWORK_API_KEY: ${{ secrets.TEAMWORK_API_KEY }}
+          DESK_API_KEY: ${{ secrets.DESK_API_KEY }}
+          TEAMWORK_BASE_URL: ${{ secrets.TEAMWORK_BASE_URL }}
+          TEAMWORK_TASKLIST_ID: ${{ secrets.TEAMWORK_TASKLIST_ID }}
