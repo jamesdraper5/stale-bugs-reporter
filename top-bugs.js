@@ -8,7 +8,7 @@ import {
 } from "./utils.js";
 dotenv.config();
 
-const TEAMWORK_CHAT_URL = process.env.TEAMWORK_CHAT_URL;
+const TEAMWORK_CHAT_URL = process.env.CORE_CHANNEL_URL;
 const TEAMWORK_BASE_URL = process.env.TEAMWORK_BASE_URL;
 const TEAMWORK_TASKLIST_ID = process.env.TEAMWORK_TASKLIST_ID;
 
