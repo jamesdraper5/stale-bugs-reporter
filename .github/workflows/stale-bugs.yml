@@ -23,7 +23,7 @@ jobs:
       - name: Run script
         run: node stale-bugs.js
         env:
-          TEAMWORK_CHAT_URL: ${{ secrets.VALIDATION_CHANNEL_URL }}
+          VALIDATION_CHANNEL_URL: ${{ secrets.VALIDATION_CHANNEL_URL }}
           TEAMWORK_API_KEY: ${{ secrets.TEAMWORK_API_KEY }}
           DESK_API_KEY: ${{ secrets.DESK_API_KEY }}
           TEAMWORK_BASE_URL: ${{ secrets.TEAMWORK_BASE_URL }}
