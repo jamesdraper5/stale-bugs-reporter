@@ -1,15 +1,15 @@
-import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock node-fetch before importing the module
-const mockFetch = jest.fn();
-jest.unstable_mockModule('node-fetch', () => ({
+const mockFetch = vi.fn();
+vi.mock('node-fetch', () => ({
   default: mockFetch
 }));
 
 // Mock console methods to reduce test output
 const originalConsole = console;
-console.log = jest.fn();
-console.error = jest.fn();
+console.log = vi.fn();
+console.error = vi.fn();
 
 // Mock process.env
 const originalEnv = process.env;
@@ -19,7 +19,7 @@ const { calculateBugScore } = await import('../lib/teamwork.js');
 
 describe('teamwork.js', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     process.env = {
       ...originalEnv,
       TEAMWORK_API_KEY: 'test-api-key',

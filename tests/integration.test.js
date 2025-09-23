@@ -1,4 +1,4 @@
-import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { generateMarkdownTable, getDateInPast, formatPriority } from '../utils.js';
 import { calculateBugScore } from '../lib/teamwork.js';
 
@@ -7,7 +7,7 @@ const originalConsole = console;
 
 describe('Integration Tests', () => {
   beforeEach(() => {
-    console.log = jest.fn();
+    console.log = vi.fn();
   });
 
   afterEach(() => {

@@ -1,4 +1,4 @@
-import { describe, test, expect } from '@jest/globals';
+import { describe, test, expect } from 'vitest';
 import { generateMarkdownTable, getDateInPast, formatPriority } from '../utils.js';
 
 describe('utils.js', () => {

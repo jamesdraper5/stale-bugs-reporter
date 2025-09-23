@@ -42,7 +42,7 @@ npm run test:watch
 npm run test:coverage
 
 # Run specific test file
-npm test -- tests/utils.test.js
+npm test tests/utils.test.js
 ```
 
 ## Coverage
@@ -57,4 +57,4 @@ The test suite achieves 100% coverage for pure utility functions and comprehensi
 4. **Data Transformation**: Testing of data mapping and formatting logic
 5. **Edge Cases**: Handling of null, undefined, and malformed data
 
-The tests use Jest with ES modules support and focus on testing the core functionality while mocking external dependencies like API calls.
+The tests use Vitest with ES modules support and focus on testing the core functionality while mocking external dependencies like API calls.

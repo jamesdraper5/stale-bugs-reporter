@@ -1,31 +1,31 @@
-import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock the dependencies
-jest.unstable_mockModule('node-fetch', () => ({
-  default: jest.fn()
+vi.mock('node-fetch', () => ({
+  default: vi.fn()
 }));
 
-jest.unstable_mockModule('../lib/teamwork.js', () => ({
-  getEnrichedTasks: jest.fn(),
-  sendChatMessage: jest.fn()
+vi.mock('../lib/teamwork.js', () => ({
+  getEnrichedTasks: vi.fn(),
+  sendChatMessage: vi.fn()
 }));
 
-jest.unstable_mockModule('../utils.js', () => ({
-  generateMarkdownTable: jest.fn(),
-  getDateInPast: jest.fn(),
-  formatPriority: jest.fn()
+vi.mock('../utils.js', () => ({
+  generateMarkdownTable: vi.fn(),
+  getDateInPast: vi.fn(),
+  formatPriority: vi.fn()
 }));
 
 // Mock console methods
 const originalConsole = console;
-console.log = jest.fn();
+console.log = vi.fn();
 
 // Mock process.env
 const originalEnv = process.env;
 
 describe('stale-bugs.js', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     process.env = {
       ...originalEnv,
       VALIDATION_CHANNEL_URL: 'https://chat.example.com/validation',
