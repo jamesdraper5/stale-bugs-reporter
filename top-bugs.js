@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import dotenv from "dotenv";
 import { getEnrichedTasks, sendChatMessage } from "./lib/teamwork.js";
 import {
@@ -8,11 +7,11 @@ import {
 } from "./utils.js";
 dotenv.config();
 
-const CORE_CHANNEL_URL = process.env.CORE_CHANNEL_URL;
+const VALIDATION_CHANNEL_URL = process.env.VALIDATION_CHANNEL_URL;
 const TEAMWORK_BASE_URL = process.env.TEAMWORK_BASE_URL;
 const TEAMWORK_TASKLIST_ID = process.env.TEAMWORK_TASKLIST_ID;
 
-console.log("CORE_CHANNEL_URL", CORE_CHANNEL_URL);
+console.log("VALIDATION_CHANNEL_URL", VALIDATION_CHANNEL_URL);
 
 const minTaskAgeInDays = 0;
 const assigneeTeamId = 9; // My Team
@@ -79,6 +78,6 @@ function generateTasksTable(tasks) {
   console.log(message);
 
   // Send the message to Chat
-  await sendChatMessage(message, CORE_CHANNEL_URL);
+  await sendChatMessage(message, VALIDATION_CHANNEL_URL);
   console.log("Chat message sent.");
 })();
