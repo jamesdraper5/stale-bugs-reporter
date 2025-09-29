@@ -7,11 +7,11 @@ import {
 } from "./utils.js";
 dotenv.config();
 
-const VALIDATION_CHANNEL_URL = process.env.VALIDATION_CHANNEL_URL;
+const CHAT_CHANNEL_URL = process.env.CHAT_CHANNEL_URL;
 const TEAMWORK_BASE_URL = process.env.TEAMWORK_BASE_URL;
 const TEAMWORK_TASKLIST_ID = process.env.TEAMWORK_TASKLIST_ID;
 
-console.log("VALIDATION_CHANNEL_URL", VALIDATION_CHANNEL_URL);
+console.log("CHAT_CHANNEL_URL", CHAT_CHANNEL_URL);
 
 const minTaskAgeInDays = 0;
 const assigneeTeamId = 9; // My Team
@@ -78,6 +78,6 @@ function generateTasksTable(tasks) {
   console.log(message);
 
   // Send the message to Chat
-  await sendChatMessage(message, VALIDATION_CHANNEL_URL);
+  await sendChatMessage(message, CHAT_CHANNEL_URL);
   console.log("Chat message sent.");
 })();
