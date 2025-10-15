@@ -70,7 +70,7 @@ function generateTasksTable(tasks) {
     apiParams: apiParams,
   });
 
-  //console.log("Normalized tasks:", normailizedTasks);
+  //console.log("Normalized xxx tasks:", normailizedTasks);
 
   const message = `:radioactive_sign: @online here are the **Top Ten Open Bugs:** \n \n \n ${generateTasksTable(
     tasks
