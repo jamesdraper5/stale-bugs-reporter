@@ -16,13 +16,13 @@ export function getDateInPast(daysAgo) {
 
 export function formatPriority(priority) {
   if (!priority) {
-    return "No Priority";
+    return "-";
   }
 
   const priorityMap = {
-    high: ":heart: High",
-    medium: ":yellow_heart: Medium",
-    low: ":green_heart: Low",
+    high: ":heart:",
+    medium: ":yellow_heart:",
+    low: ":green_heart:",
   };
 
   if (priorityMap[priority]) {

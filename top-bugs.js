@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { writeFileSync } from "fs";
 import { getEnrichedTasks, sendChatMessage } from "./lib/teamwork.js";
 import {
   generateMarkdownTable,
@@ -10,6 +11,9 @@ dotenv.config();
 const CHAT_CHANNEL_URL = process.env.CHAT_CHANNEL_URL;
 const TEAMWORK_BASE_URL = process.env.TEAMWORK_BASE_URL;
 const TEAMWORK_TASKLIST_ID = process.env.TEAMWORK_TASKLIST_ID;
+const numberOfTasksToShow = 20;
+const shouldSendMessage = true;
+const shouldWriteToFile = true;
 
 console.log("CHAT_CHANNEL_URL", CHAT_CHANNEL_URL);
 
@@ -23,6 +27,7 @@ const apiParams = {
   includeCommentStats: true,
   includeCompanyUserIds: true,
   includeCustomFields: true,
+  include: "tags",
   getSubTasks: true,
   createdFilter: "custom",
   orderBy: "createdAt",
@@ -45,7 +50,7 @@ function generateTasksTable(tasks) {
 
   const rows = tasks
     .sort((a, b) => (b.bugScore ?? 0) - (a.bugScore ?? 0)) // Sort tasks by bugScore descending
-    .slice(0, 10) // Limit to top 10 tasks
+    .slice(0, numberOfTasksToShow || undefined)
     .map((task) => {
       console.log("Task:", task);
       return [
@@ -70,14 +75,27 @@ function generateTasksTable(tasks) {
     apiParams: apiParams,
   });
 
-  //console.log("Normalized tasks:", normailizedTasks);
-
-  const message = `:radioactive_sign: @online here are the **Top Ten Open Bugs:** \n \n \n ${generateTasksTable(
-    tasks
-  )}`;
+  //console.log("Normalized xxx tasks:", normailizedTasks);
+  const tableContents = generateTasksTable(tasks);
+  const tableTitle =
+    numberOfTasksToShow > 0
+      ? `**Top ${numberOfTasksToShow} Open Bugs:**`
+      : "**Total Open Bugs**";
+  const message = `:radioactive_sign: @online here are the ${tableTitle} \n \n \n ${tableContents}`;
   console.log(message);
 
-  // Send the message to Chat
-  await sendChatMessage(message, CHAT_CHANNEL_URL);
-  console.log("Chat message sent.");
+  if (shouldWriteToFile) {
+    const filename = `bug-reports/bugs-report-${
+      new Date().toISOString().split("T")[0]
+    }.md`;
+    const fileContent = `# ${tableTitle}\n\n${tableContents}`;
+    writeFileSync(filename, fileContent, "utf-8");
+    console.log(`✅ Report written to ${filename}`);
+  }
+
+  if (shouldSendMessage) {
+    // Send the message to Chat
+    await sendChatMessage(message, CHAT_CHANNEL_URL);
+    console.log("Chat message sent.");
+  }
 })();
